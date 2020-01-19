@@ -3,23 +3,28 @@ const express = require('express'),
   path = require('path');
 
 const bodyParser = require('body-parser'),
-  static = require('server-static');
+  static = require('serve-static');
 
 const app = express();
 
-app.set(bodyParser.urlencoded({ extended: false }));
+app.set('port', process.env.PORT || 3000);
+
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(bodyParser.json());
+
+app.use(static(path.join(__dirname, 'public')));
+
 app.use(function(req, res, next) {
   console.log('첫 번째 미들웨어에서 요청을 처리함');
 
-  var userAgent = req.header('User-Agent');
-  var paramName = req.query.name;
+  var paramId = req.body.id || req.query.id;
+  var paramPassword = req.body.password || req.query.password;
 
   res.writeHead('200', { 'Content-Type': 'text/html;charset=utf8' });
   res.write('<h1>Express 서버에서 응답한 결과입니다.</h1>');
-  res.write('<div><p>User-Agent : ' + userAgent + '</p></div>');
-  res.write('<div><p>Param-Name : ' + paramName + '</p></div>');
+  res.write('<div><p>Param id : ' + paramId + '</p></div>');
+  res.write('<div><p>Param password : ' + paramPassword + '</p></div>');
   res.end();
 });
 
