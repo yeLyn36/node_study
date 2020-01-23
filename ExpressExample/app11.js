@@ -23,21 +23,11 @@ app.use(bodyParser.json());
 
 app.use('/public', static(path.join(__dirname, 'public')));
 
-app.use(express.cookieParser());
+app.use(cookieParser());
 
 const router = express.Router();
 
 const expressErrorHandler = require('express-error-handler');
-
-var errorHandler = expressErrorHandler({
-  static: {
-    '404': './public/404.html'
-  }
-});
-
-app.use(expressErrorHandler.httpError(404));
-
-app.use(errorHandler);
 
 router.route('/process/showCookie').get(function(req, res) {
   console.log('/process/showCookie 호출됨');
@@ -58,6 +48,16 @@ router.route('/process/setUserCookie').get(function(req, res) {
 });
 
 app.use('/', router);
+
+var errorHandler = expressErrorHandler({
+  static: {
+    '404': './public/404.html'
+  }
+});
+
+app.use(expressErrorHandler.httpError(404));
+
+app.use(errorHandler);
 
 http.createServer(app).listen(3000, function() {
   console.log('Express 서버가 3000번 포트에서 시작됨.');
