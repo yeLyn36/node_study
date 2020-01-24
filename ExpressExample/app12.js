@@ -35,18 +35,6 @@ app.use(
 
 const router = express.Router();
 
-const expressErrorHandler = require('express-error-handler');
-
-var errorHandler = expressErrorHandler({
-  static: {
-    '404': './public/404.html'
-  }
-});
-
-app.use(expressErrorHandler.httpError(404));
-
-app.use(errorHandler);
-
 router.route('/process/product').get(function(req, res) {
   console.log('/process/product 호출됨');
 
@@ -66,7 +54,7 @@ router.route('/process/login').post(function(req, res) {
   //이미 로그인이 된 상태
   if (req.session.user) {
     console.log('이미 로그인이 되어있으므로 상품 페이지로 이동합니다.');
-    res.redirect('/public/product.html');
+    res.redirect('/public/product');
   } else {
     res.session.user = {
       id: paramId,
