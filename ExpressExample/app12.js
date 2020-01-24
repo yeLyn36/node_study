@@ -1,24 +1,29 @@
 // Express 기본 모듈 불러오기
 const express = require('express'),
   http = require('http'),
-  path = require('path');
-
-// Express 미들웨어 불러오기
-const bodyParser = require('body-parser'),
-  static = require('serve-static');
-
-const cookieParser = require('cookie-parser');
-const expressSession = require('express-session');
+  path = require('path'),
+  // Express 미들웨어 불러오기
+  bodyParser = require('body-parser'),
+  static = require('serve-static'),
+  //쿠키
+  cookieParser = require('cookie-parser'),
+  //세션
+  expressSession = require('express-session'),
+  //에러
+  expressErrorHandler = require('express-error-handler');
 
 // 익스프레스 객체 생성
 const app = express();
+
+http.createServer(app).listen(3000, function() {
+  console.log('Express 서버가 3000번 포트에서 시작됨.');
+});
 
 // 기본 속성 설정
 app.set('port', process.env.PORT || 3000);
 
 // body-parser를 사용해 application/x-www-form-urlencoded 파싱
 app.use(bodyParser.urlencoded({ extended: false }));
-
 // body-parser를 사용해 applicaiton/json 파싱
 app.use(bodyParser.json());
 
@@ -93,6 +98,12 @@ router.route('/process/logout').get(function(req, res) {
 
 app.use('/', router);
 
-http.createServer(app).listen(3000, function() {
-  console.log('Express 서버가 3000번 포트에서 시작됨.');
+var errorHandler = expressErrorHandler({
+  static: {
+    '404': './public/404.html'
+  }
 });
+
+app.use(expressErrorHandler.httpError(404));
+
+app.use(errorHandler);
