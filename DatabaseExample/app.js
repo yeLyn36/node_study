@@ -6,14 +6,15 @@ const express = require('express'),
 //Express 미들웨어 불러오기
 const bodyParser = require('body-parser'),
   cookieParser = require('cookie-parser'),
-  static = require('serve-static'),
-  errorHandler = require('errorhandler');
+  static = require('serve-static');
+
+var errorHandler = require('errorhandler');
 
 //오류 핸들러 모듈 사용
 const expressErrorHandler = require('express-error-handler');
 
 //Session 미들웨어 불러오기
-const exressSession = require('express-session');
+const expressSession = require('express-session');
 
 //익스프레스 객체 생성
 const app = express();
@@ -24,7 +25,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(bodyParser.json());
 
-app.use('public', static(path.join(__dirname, 'public')));
+app.use('/public', static(path.join(__dirname, 'public')));
 
 app.use(cookieParser());
 
@@ -77,7 +78,7 @@ router.route('/process/login').post(function(req, res) {
 
 app.use('/', router);
 
-var errorHandler = expressErrerHandler({
+var errorHandler = expressErrorHandler({
   static: {
     '404': './public/404.html'
   }
@@ -85,7 +86,6 @@ var errorHandler = expressErrerHandler({
 
 app.use(expressErrorHandler.httpError(404));
 app.use(errorHandler);
-
 http.createServer(app).listen(app.get('port'), function() {
   console.log('서버가 시작되었습니다. 포트 : ' + app.get('port'));
 });
