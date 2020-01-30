@@ -39,39 +39,37 @@ app.use(
 
 const router = express.Router();
 
-//로그인 라우팅 함수 - 데이터베이스의 정보와 비교
-router.route('/process/login').post(function(req, res) {
-  console.log('/process/login 호출됨');
-  var paramId = req.param('id');
-  var paramPassword = req.param('password');
+router.route('/process/adduser').post(function(req, res) {
+  console.log('/process/adduser 호출됨');
+  var paramId = req.query.id || req.body.id;
+  var paramPassword = req.query.password || req.body.password;
+  var paramName = req.query.name || req.body.name;
+
+  console.log(
+    '요청 파라미터 : ' + paramId + ', ' + paramPassword + ', ' + paramName
+  );
 
   if (database) {
-    authUser(database, paramId, paramPassword, function(err, docs) {
+    addUser(database, paramId, paramPassword, paramName, function(err, docs) {
       if (err) {
         throw err;
       }
 
-      if (docs) {
-        console.dir(docs);
+      if (result && result.insertCount > 0) {
+        console.dir(result);
 
         res.writeHead('200', { 'Content-Type': 'text/html; charset=utf8' });
-        res.write('<h1>로그인 성공</h1>');
-        res.write('<div><p>사용자 아이디 : ' + paramId + ' </p></div>');
-        res.write('<div><p>사용자 이름 : ' + docs[0].name + ' </p></div>');
-        res.write('<br><br><a href="/public/login.html">다시 로그인하기</a>');
+        res.write('<h2>사용자 추가 성공</h2>');
         res.end();
       } else {
         res.writeHead('200', { 'Content-Type': 'text/html; charset=utf8' });
-        res.write('<h1>로그인 실패</h1>');
-        res.write('<div><p>사용자 아이디와 비밀번호를 확인하십시오 </p></div>');
-        res.write('<br><br><a href="/public/login.html">다시 로그인하기</a>');
+        res.write('<h2>사용자 추가 실패</h2>');
         res.end();
       }
     });
   } else {
     res.writeHead('200', { 'Content-Type': 'text/html; charset=utf8' });
     res.write('<h2>데이터베이스 연결 실패</h2>');
-    res.write('<div><p>데이터베이스에 연결 하지 못했습니다.</p></div>');
     res.end();
   }
 });
@@ -128,6 +126,28 @@ const authUser = function(database, id, password, callback) {
       callback(null, null);
     }
   });
+};
+
+const addUser = function(database, id, password, name, callback) {
+  console.log('addUser 호출됨 : ' + id + ', ' + password + ', ' + name);
+
+  var users = database.collection('users');
+
+  users.insertMany([{ id: id, password: password, name: name }]),
+    function(err, result) {
+      if (err) {
+        callback(err, null);
+        return;
+      }
+
+      if (result.insertCount > 0) {
+        console.log('사용자 레코드 추가됨 : ' + result.insertCount);
+      } else {
+        console.log('추가된 레코드 없음');
+      }
+
+      callback(null, result);
+    };
 };
 
 http.createServer(app).listen(app.get('port'), function() {
