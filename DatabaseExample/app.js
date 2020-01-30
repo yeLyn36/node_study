@@ -89,3 +89,19 @@ app.use(errorHandler);
 http.createServer(app).listen(app.get('port'), function() {
   console.log('서버가 시작되었습니다. 포트 : ' + app.get('port'));
 });
+
+const MongoClient = require('mongodb').MongoClient;
+
+var database;
+
+function connectDB() {
+  var databaseUrl = 'mongodb://localhost:27017/local';
+
+  MongoClient.connect(databaseUrl, function(err, db) {
+    if (err) throw err;
+
+    console.log('데이터베이스에 연결되었습니다.');
+
+    database = db;
+  });
+}
