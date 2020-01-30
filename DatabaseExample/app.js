@@ -42,8 +42,8 @@ const router = express.Router();
 //로그인 라우팅 함수 - 데이터베이스의 정보와 비교
 router.route('/process/login').post(function(req, res) {
   console.log('/process/login 호출됨');
-  var paramId = req.param('id');
-  var paramPassword = req.param('password');
+  var paramId = req.param('id') || req.body('id');
+  var paramPassword = req.param('password') || req.body('password');
 
   if (database) {
     authUser(database, paramId, paramPassword, function(err, docs) {
@@ -99,7 +99,9 @@ function connectDB() {
 
     console.log('데이터베이스에 연결되었습니다.');
 
-    database = db;
+    //mongodb 버전3 이후 데이터베이스명 명시 필요
+    //database = db; -> 몽고디비 버전3 전
+    database = db.db('local');
   });
 }
 
