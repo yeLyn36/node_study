@@ -16,6 +16,9 @@ const expressErrorHandler = require('express-error-handler');
 //Session 미들웨어 불러오기
 const expressSession = require('express-session');
 
+//몽고 스키마 사용
+const mongoose = require('mongoose');
+
 //익스프레스 객체 생성
 const app = express();
 
@@ -48,7 +51,7 @@ router.route('/process/adduser').post(function(req, res) {
   console.log(
     '요청 파라미터 : ' + paramId + ', ' + paramPassword + ', ' + paramName
   );
-  
+
   if (database) {
     addUser(database, paramId, paramPassword, paramName, function(err, docs) {
       if (err) {
@@ -88,18 +91,23 @@ app.use(errorHandler);
 const MongoClient = require('mongodb').MongoClient;
 
 var database;
+var UserSchema;
+var UserModel;
 
 function connectDB() {
   var databaseUrl = 'mongodb://localhost:27017/local';
 
-  MongoClient.connect(databaseUrl, function(err, db) {
-    if (err) throw err;
+  console.log('데이터 베이스 연결을 시도합니다.');
+  mongoose.Promise = global.Promise;
+  mongoose.connect(databaseUrl);
+  database = mongoose.connection;
 
-    console.log('데이터베이스에 연결되었습니다.');
-
-    //mongodb 버전3 이후 데이터베이스명 명시 필요
-    //database = db; -> 몽고디비 버전3 전
-    database = db.db('local');
+  database.on(
+    'error',
+    console.error.bind(console, 'mongoose connection error')
+  );
+  database.on('open', function() {
+    console.log('데이터베이스에 연결하였습니다. : ' + databaseUrl);
   });
 }
 
