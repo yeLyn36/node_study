@@ -129,7 +129,7 @@ function connectDB() {
     setInterval(connectDB, 5000);
   });
 }
-
+//수정
 const authUser = function(database, id, password, callback) {
   console.log('authUser 호출됨');
 
