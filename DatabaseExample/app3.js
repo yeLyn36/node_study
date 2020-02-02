@@ -94,14 +94,17 @@ var database;
 var UserSchema;
 var UserModel;
 
+//데이터 베이스 연결
 function connectDB() {
   var databaseUrl = 'mongodb://localhost:27017/local';
 
+  //스키마
   console.log('데이터 베이스 연결을 시도합니다.');
   mongoose.Promise = global.Promise;
   mongoose.connect(databaseUrl);
   database = mongoose.connection;
 
+  //이벤트 발생
   database.on(
     'error',
     console.error.bind(console, 'mongoose connection error')
