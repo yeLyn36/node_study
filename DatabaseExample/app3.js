@@ -98,7 +98,7 @@ var UserModel;
 function connectDB() {
   var databaseUrl = 'mongodb://localhost:27017/local';
 
-  //스키마
+  //DB 연결 시도
   console.log('데이터 베이스 연결을 시도합니다.');
   mongoose.Promise = global.Promise;
   mongoose.connect(databaseUrl);
@@ -111,6 +111,22 @@ function connectDB() {
   );
   database.on('open', function() {
     console.log('데이터베이스에 연결하였습니다. : ' + databaseUrl);
+  });
+
+  UserSchema = mongoose.Schema({
+    id: String,
+    name: String,
+    password: String
+  });
+  console.log('UserSchema 정의');
+
+  //Usermodel 정의
+  UserModel = mongoose.model('user', UserSchema);
+  console.log('UserModel 정의');
+
+  database.on('disconnected', function() {
+    console.log('연결이 끊어졌습니다. 5초 후에 다시 연결합니다.');
+    setInterval(connectDB, 5000);
   });
 }
 
