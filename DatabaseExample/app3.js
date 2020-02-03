@@ -129,25 +129,24 @@ function connectDB() {
     setInterval(connectDB, 5000);
   });
 }
-//수정
+
+//사용자 인증 함수
 const authUser = function(database, id, password, callback) {
-  console.log('authUser 호출됨');
+  console.log('authUser 호출됨 : ' + id + ', ' + password);
 
-  var users = database.collection('users');
-
-  users.find({ id: id, password: password }).toArray(function(err, docs) {
+  //아이디와 비밀번호를 사용해서 검색
+  UserModel.find({ id: id, password: password }, function(err, result) {
     if (err) {
       callback(err, null);
       return;
     }
 
-    if (docs.length > 0) {
-      console.log(
-        '아이디 [%s],  비밀번호[%s]가 일치하는 사용자 찾음.',
-        id,
-        password
-      );
-      callback(null, docs);
+    console.log('아이디 [%s], 비밀번호 [%s] 로 사용자 검색결과', id, password);
+    console.dir(result);
+
+    if (result.length > 0) {
+      console.log('일치하는 사용자 찾음 ', id, password);
+      callback(null, result);
     } else {
       console.log('일치하는 사용자를 찾지 못함');
       callback(null, null);
