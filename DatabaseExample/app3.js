@@ -17,6 +17,7 @@ const expressErrorHandler = require('express-error-handler');
 const expressSession = require('express-session');
 
 //몽고 스키마 사용
+//몽고 데이터베이스를 엑셀시트처럼 보기 쉽게 만들어주는 모듈
 const mongoose = require('mongoose');
 
 //익스프레스 객체 생성
@@ -100,6 +101,7 @@ function connectDB() {
 
   //DB 연결 시도
   console.log('데이터 베이스 연결을 시도합니다.');
+  //다른 코드에서도 mongoose.Promise를 사용하기 위해 글로벌 생성
   mongoose.Promise = global.Promise;
   mongoose.connect(databaseUrl);
   database = mongoose.connection;
