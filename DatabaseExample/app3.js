@@ -159,23 +159,17 @@ const authUser = function(database, id, password, callback) {
 const addUser = function(database, id, password, name, callback) {
   console.log('addUser 호출됨 : ' + id + ', ' + password + ', ' + name);
 
-  var users = database.collection('users');
+  //UserModel의 인스턴스 생성
+  var users = new UserModel({ id: id, password: password, name: name });
 
-  users.insertMany([{ id: id, password: password, name: name }]),
-    function(err, result) {
-      if (err) {
-        callback(err, null);
-        return;
-      }
-
-      if (result.insertCount > 0) {
-        console.log('사용자 레코드 추가됨 : ' + result.insertCount);
-      } else {
-        console.log('추가된 레코드 없음');
-      }
-
-      callback(null, result);
-    };
+  users.save(function(err) {
+    if (err) {
+      callback(err, null);
+      return;
+    }
+    console.log('사용자 데이터 추가됨');
+    callback(null, user);
+  });
 };
 
 http.createServer(app).listen(app.get('port'), function() {
