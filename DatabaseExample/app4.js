@@ -123,10 +123,19 @@ function connectDB() {
     created_at: { type: Date, index: { unique: false }, default: Date.now },
     updated_at: { type: Date, index: { unique: false }, default: Date.now }
   });
+
+  UserSchema.static('findById', function(id, callback) {
+    return this.find({ id: id }, callback);
+  });
+
+  UserSchema.static('findAll', function(id, callback) {
+    return this.find({}, callback);
+  });
+
   console.log('UserSchema 정의');
 
   //Usermodel 정의
-  UserModel = mongoose.model('user', UserSchema);
+  UserModel = mongoose.model('user2', UserSchema);
   console.log('UserModel 정의');
 
   database.on('disconnected', function() {
