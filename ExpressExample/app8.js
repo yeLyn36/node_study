@@ -12,7 +12,7 @@ const app = express();
 
 const router = express.Router();
 
-router.route('/process/login').post(function(req, res) {
+router.route('/process/login').get(function(req, res) {
   console.log('/process/login 처리함');
 
   var paramId = req.body.id || req.query.id;
