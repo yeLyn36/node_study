@@ -180,7 +180,7 @@ const addUser = function(database, id, password, name, callback) {
       return;
     }
     console.log('사용자 데이터 추가됨');
-    callback(null, user);
+    callback(null, users);
   });
 };
 
