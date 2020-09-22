@@ -123,19 +123,10 @@ function connectDB() {
     created_at: { type: Date, index: { unique: false }, default: Date.now },
     updated_at: { type: Date, index: { unique: false }, default: Date.now }
   });
-
-  UserSchema.static('findById', function(id, callback) {
-    return this.find({ id: id }, callback);
-  });
-
-  UserSchema.static('findAll', function(id, callback) {
-    return this.find({}, callback);
-  });
-
   console.log('UserSchema 정의');
 
   //Usermodel 정의
-  UserModel = mongoose.model('user2', UserSchema);
+  UserModel = mongoose.model('user', UserSchema);
   console.log('UserModel 정의');
 
   database.on('disconnected', function() {
@@ -180,7 +171,7 @@ const addUser = function(database, id, password, name, callback) {
       return;
     }
     console.log('사용자 데이터 추가됨');
-    callback(null, user);
+    callback(null, users);
   });
 };
 
